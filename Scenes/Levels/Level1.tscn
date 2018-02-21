@@ -1,0 +1,56 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Scripts/Level.gd" type="Script" id=1]
+[ext_resource path="res://Scenes/Ground.tscn" type="PackedScene" id=2]
+[ext_resource path="res://TileSets/TileSet.tres" type="TileSet" id=3]
+
+[node name="Node" type="Node"]
+
+script = ExtResource( 1 )
+
+[node name="Ground" parent="." index="0" instance=ExtResource( 2 )]
+
+[node name="Map" type="TileMap" parent="." index="1"]
+
+mode = 0
+tile_set = ExtResource( 3 )
+cell_size = Vector2( 64, 64 )
+cell_quadrant_size = 16
+cell_custom_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+cell_half_offset = 2
+cell_tile_origin = 0
+cell_y_sort = false
+cell_clip_uv = false
+collision_use_kinematic = false
+collision_friction = 1.0
+collision_bounce = 0.0
+collision_layer = 1
+collision_mask = 1
+occluder_light_mask = 1
+format = 1
+tile_data = PoolIntArray( 65538, 2, 0, 65549, 2, 0, 131073, 2, 0, 131086, 2, 0, 196610, 2, 0, 196614, 1, 0, 196615, -1610612735, 0, 196616, 1610612737, 0, 196617, -1073741823, 0, 196621, 2, 0, 262145, 2, 0, 262147, 2, 0, 262150, 0, 0, 262156, 2, 0, 262158, 2, 0, 327682, 2, 0, 327686, -1610612735, 0, 327687, 1610612737, 0, 327688, -1073741823, 0, 327689, 1, 0, 327693, 2, 0, 393217, 2, 0, 393230, 2, 0, 458754, 2, 0, 458765, 2, 0 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Coins" type="TileMap" parent="." index="2"]
+
+mode = 0
+tile_set = ExtResource( 3 )
+cell_size = Vector2( 64, 64 )
+cell_quadrant_size = 16
+cell_custom_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+cell_half_offset = 2
+cell_tile_origin = 0
+cell_y_sort = false
+cell_clip_uv = false
+collision_use_kinematic = false
+collision_friction = 1.0
+collision_bounce = 0.0
+collision_layer = 1
+collision_mask = 1
+occluder_light_mask = 1
+format = 1
+tile_data = PoolIntArray( 65550, 3, 0, 131074, 3, 0, 131085, 3, 0, 196609, 3, 0, 196620, 3, 0, 262144, 3, 0, 262146, 3, 0, 262151, 3, 0, 262152, 3, 0, 262155, 3, 0, 262157, 3, 0, 327681, 3, 0, 327692, 3, 0, 393218, 3, 0, 393229, 3, 0, 458766, 3, 0 )
+
+

@@ -20,10 +20,6 @@ const DIR_RIGHT = 1
 const DIR_UP = 2
 const DIR_DOWN = 3
 
-# Levels
-const MAX_LEVELS = 2 # update when adding new levels
-var nextLevel
-
 func _ready():
 	# Map should not have coins
 	assert($Map.get_used_cells_by_id(COIN_ID).size() == 0)
@@ -35,23 +31,15 @@ func _ready():
 	assert(numBoxes > 0)
 	assert(numCoins > 0)
 	assert(numBoxes == numCoins)
-	
-	# Get next level number
-	var regex = RegEx.new()
-	regex.compile("Level(\\d+).tscn")
-	var result = regex.search(get_tree().current_scene.filename)
-	if result:
-		nextLevel = int(result.get_string(1)) + 1
-		nextLevel = null if (nextLevel > MAX_LEVELS) else str(nextLevel)
 
 func _process(delta):
 	# Do nothing if level is changing
-	if LevelTransition.transitioning: return
+	if Transitioner.transitioning: return
 	
 	if Input.is_action_just_released("reload_level"):
-		LevelTransition.reload()
+		Transitioner.reload_level()
 	elif Input.is_action_just_released("ui_cancel"):
-		get_tree().change_scene("res://Scenes/MainMenu.tscn")
+		Transitioner.go_to_main_menu()
 	
 	if Input.is_action_just_pressed("ui_left"):
 		move_player(DIR_LEFT)
@@ -62,11 +50,7 @@ func _process(delta):
 	elif Input.is_action_just_pressed("ui_down"):
 		move_player(DIR_DOWN)
 		
-	if has_won():
-		if nextLevel:
-			LevelTransition.transition("res://Scenes/Levels/Level" + nextLevel + ".tscn", nextLevel)
-		else:
-			get_tree().change_scene("res://Scenes/MainMenu.tscn")
+	if has_won(): Transitioner.go_to_next_level()
 
 # Returns true if the player has won the level.
 func has_won():

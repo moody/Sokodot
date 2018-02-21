@@ -14,6 +14,10 @@ config/name="Sokodot"
 run/main_scene="res://Scenes/MainMenu.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+LevelTransition="*res://Scenes/LevelTransition.tscn"
+
 [display]
 
 window/size/height=576

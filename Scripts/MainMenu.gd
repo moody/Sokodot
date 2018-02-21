@@ -14,7 +14,7 @@ func _process(delta):
 		get_tree().quit()
 
 func _on_PlayButton_pressed():
-	get_tree().change_scene("res://Scenes/Levels/Level1.tscn")
+	LevelTransition.transition("res://Scenes/Levels/Level1.tscn", "1")
 
 func _on_ExitButton_pressed():
 	get_tree().quit()

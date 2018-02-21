@@ -45,11 +45,14 @@ func _ready():
 		nextLevel = null if (nextLevel > MAX_LEVELS) else str(nextLevel)
 
 func _process(delta):
+	# Do nothing if level is changing
+	if LevelTransition.transitioning: return
+	
 	if Input.is_action_just_released("reload_level"):
-		get_tree().reload_current_scene()
+		LevelTransition.reload()
 	elif Input.is_action_just_released("ui_cancel"):
 		get_tree().change_scene("res://Scenes/MainMenu.tscn")
-		
+	
 	if Input.is_action_just_pressed("ui_left"):
 		move_player(DIR_LEFT)
 	elif Input.is_action_just_pressed("ui_right"):
@@ -61,7 +64,7 @@ func _process(delta):
 		
 	if has_won():
 		if nextLevel:
-			get_tree().change_scene("res://Scenes/Levels/Level" + nextLevel + ".tscn")
+			LevelTransition.transition("res://Scenes/Levels/Level" + nextLevel + ".tscn", nextLevel)
 		else:
 			get_tree().change_scene("res://Scenes/MainMenu.tscn")
 

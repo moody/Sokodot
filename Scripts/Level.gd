@@ -5,6 +5,7 @@ const MAP_WIDTH = 16
 const MAP_HEIGHT = 9
 
 const TILE_SIZE = 64
+const TILE_OFFSET = TILE_SIZE * 0.5
 
 # Tile IDs
 const EMPTY_ID = -1
@@ -20,17 +21,31 @@ const DIR_RIGHT = 1
 const DIR_UP = 2
 const DIR_DOWN = 3
 
+# Coins
+var coin_texture = preload("res://Textures/Coin.png")
+var coins = [] # coin tile positions (Vector2)
+
 func _ready():
-	# Map should not have coins
-	assert($Map.get_used_cells_by_id(COIN_ID).size() == 0)
 	# Only 1 player tile
 	assert($Map.get_used_cells_by_id(PLAYER_ID).size() == 1)
 	# At least 1 box, and equal to number of coins
 	var numBoxes = $Map.get_used_cells_by_id(BOX_ID).size()
-	var numCoins = $Coins.get_used_cells_by_id(COIN_ID).size()
+	var numCoins = $Map.get_used_cells_by_id(COIN_ID).size()
 	assert(numBoxes > 0)
 	assert(numCoins > 0)
 	assert(numBoxes == numCoins)
+	
+	# Replace coin tiles with sprites, store positions
+	for pos in $Map.get_used_cells_by_id(COIN_ID):
+		set_tile(pos, EMPTY_ID) # remove tile
+		coins.append(pos) # add coin position to array
+		# Add coin sprite
+		var coin = Sprite.new()
+		coin.set_texture(coin_texture)
+		coin.position = pos * TILE_SIZE
+		coin.position.x += TILE_OFFSET
+		coin.position.y += TILE_OFFSET
+		add_child(coin)
 
 func _process(delta):
 	# Do nothing if level is changing
@@ -53,10 +68,7 @@ func _process(delta):
 	if has_won(): Transitioner.go_to_next_level()
 
 # Returns true if the player has won the level.
-func has_won():
-	var noBoxes = $Map.get_used_cells_by_id(BOX_ID).size() == 0
-	var noCoins = $Map.get_used_cells_by_id(COIN_ID).size() == 0
-	return noBoxes and noCoins
+func has_won(): return $Map.get_used_cells_by_id(BOX_ID).size() == 0
 
 # Moves the player in the specified direction if possible.
 func move_player(dir):
@@ -84,12 +96,14 @@ func move_player(dir):
 	
 	# don't move unless tile is empty or is a box
 	var id = $Map.get_cell(newPos.x, newPos.y)
-	if id != EMPTY_ID and id != BOX_ID: return
+	var isBox = id == BOX_ID or id == LOCK_BOX_ID
+	if id != EMPTY_ID and !isBox: return
 	# check for box and if we can move it
-	if id == BOX_ID:
+	if isBox:
 		if can_move_box(newBoxPos):
-			var isCoin = $Coins.get_cell(newBoxPos.x, newBoxPos.y) == COIN_ID
-			if isCoin: set_tile(newPos, LOCK_BOX_ID) # change box to lockbox
+			# If moving to coin tile, set tile image to lock box, otherwise regular box
+			var isCoin = coins.has(newBoxPos)
+			set_tile(newPos, LOCK_BOX_ID if isCoin else BOX_ID)
 			move_tile(newPos, newBoxPos) # move box
 			move_tile(pos, newPos) # move player
 	else:
